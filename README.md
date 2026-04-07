@@ -17,7 +17,7 @@
 
 With the rapid proliferation of Large Language Models (LLMs) such as ChatGPT in academic and scientific writing, the ability to automatically distinguish between **human-authored**, **AI-generated**, and **mixed** (human + AI) text has become a pressing concern for academic integrity, peer review, and content verification.
 
-This project presents an end-to-end machine learning pipeline for **three-class scientific text classification**. Using the **AIGTxt** dataset—a curated collection of scientific passages spanning multiple academic domains—we engineer linguistic features, apply **TF-IDF vectorization** with bigram support, and compare two interpretable classifiers: **Multinomial Naive Bayes** (baseline) and **Random Forest** (ensemble). Our analysis includes detailed **error diagnostics** and **feature importance** interpretation to understand *why* models succeed or fail on this challenging task.
+This project presents an end-to-end machine learning pipeline for **three-class scientific text classification**. Using the **AIGTxt** dataset—a curated collection of scientific passages spanning multiple academic domains—we engineer linguistic features, apply **TF-IDF vectorization** with bigram support, and compare two interpretable classifiers: **Multinomial Naive Bayes** (baseline) and **Random Forest** (ensemble). Our analysis includes detailed **error diagnostics** and **feature importance** interpretation to understand _why_ models succeed or fail on this challenging task.
 
 ---
 
@@ -44,12 +44,12 @@ AIGTxt/
 
 The **AIGTxt** dataset is an Excel-based collection of scientific text samples organized in a **wide format**, with each column representing a different text source:
 
-| Column               | Description                                                    |
-|----------------------|----------------------------------------------------------------|
-| `Human-Generated`    | Passages written entirely by human researchers.                |
-| `ChatGPT-Generated`  | Passages generated entirely by ChatGPT (an LLM).              |
-| `Mixed Text`         | Passages that blend human and AI authorship.                   |
-| `Domain`             | The academic domain of the text (e.g., Physics, Biology, CS).  |
+| Column              | Description                                                   |
+| ------------------- | ------------------------------------------------------------- |
+| `Human-Generated`   | Passages written entirely by human researchers.               |
+| `ChatGPT-Generated` | Passages generated entirely by ChatGPT (an LLM).              |
+| `Mixed Text`        | Passages that blend human and AI authorship.                  |
+| `Domain`            | The academic domain of the text (e.g., Physics, Biology, CS). |
 
 ### Data Reshaping: Wide → Long
 
@@ -78,23 +78,25 @@ We convert raw text into numerical feature vectors using **Term Frequency–Inve
 $$\text{TF-IDF}(t, d) = \text{TF}(t, d) \times \log\left(\frac{N}{\text{DF}(t)}\right)$$
 
 Where:
-- **TF(t, d)**: Frequency of term *t* in document *d*.
-- **DF(t)**: Number of documents containing term *t*.
+
+- **TF(t, d)**: Frequency of term _t_ in document _d_.
+- **DF(t)**: Number of documents containing term _t_.
 - **N**: Total number of documents.
 
 **Configuration:**
+
 - `max_features=10,000` — Limits the vocabulary to the top 10K most important terms.
 - `ngram_range=(1, 2)` — Captures both unigrams (single words) and **bigrams** (two-word phrases like "neural network" or "deep learning"), which are critical for detecting domain-specific patterns.
 - `stop_words='english'` — Removes common words (the, is, a…) that carry no discriminative signal.
 
 #### Engineered Linguistic Features
 
-Beyond raw word frequencies, we compute two **document-level** features that capture writing *style*:
+Beyond raw word frequencies, we compute two **document-level** features that capture writing _style_:
 
-| Feature              | Intuition                                                                                       |
-|----------------------|-------------------------------------------------------------------------------------------------|
-| `avg_sent_len`       | Average number of words per sentence. AI text tends toward uniform, mid-length sentences.        |
-| `vocab_diversity`    | Ratio of unique words to total words (`|unique| / |total|`). Human text typically shows higher lexical diversity. |
+| Feature           | Intuition                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------- | ------ | --- | ----- | -------------------------------------------------------- |
+| `avg_sent_len`    | Average number of words per sentence. AI text tends toward uniform, mid-length sentences. |
+| `vocab_diversity` | Ratio of unique words to total words (`                                                   | unique | /   | total | `). Human text typically shows higher lexical diversity. |
 
 These are appended to the TF-IDF matrix to form the final feature set.
 
@@ -122,8 +124,8 @@ We adopt a **comparative** approach, evaluating two models with fundamentally di
 
 Both models are evaluated using **5-Fold Stratified Cross-Validation** on the training set (70%) to estimate generalization performance, then assessed on a held-out **test set (30%)** using:
 
-- **Precision**: Of all samples predicted as class *C*, what fraction truly belongs to *C*?
-- **Recall**: Of all actual class *C* samples, what fraction did the model correctly identify?
+- **Precision**: Of all samples predicted as class _C_, what fraction truly belongs to _C_?
+- **Recall**: Of all actual class _C_ samples, what fraction did the model correctly identify?
 - **F1-Score**: Harmonic mean of Precision and Recall — balances both concerns.
 
 ---
@@ -132,16 +134,16 @@ Both models are evaluated using **5-Fold Stratified Cross-Validation** on the tr
 
 ### Comparative Model Performance
 
-| Metric             | Naive Bayes | Random Forest |
-|--------------------|:-----------:|:-------------:|
-| **CV Accuracy**    |   ~0.39     |    ~0.44      |
-| **Test Accuracy**  |   ~0.39     |    ~0.44      |
+| Metric            | Naive Bayes | Random Forest |
+| ----------------- | :---------: | :-----------: |
+| **CV Accuracy**   |    ~0.39    |     ~0.44     |
+| **Test Accuracy** |    ~0.39    |     ~0.44     |
 
 The **Random Forest** consistently outperforms Naive Bayes, leveraging its ability to capture non-linear feature interactions that the independence-assuming NB model cannot.
 
 ### Confusion Matrix
 
-The confusion matrix reveals *where* the model gets confused:
+The confusion matrix reveals _where_ the model gets confused:
 
 <p align="center">
   <img src="docs/images/confusion_matrix.png" alt="Confusion Matrix" width="550"/>
@@ -149,6 +151,7 @@ The confusion matrix reveals *where* the model gets confused:
 <p align="center"><em>Figure 2: Confusion matrix for the Random Forest classifier on the test set.</em></p>
 
 **Key observations:**
+
 - **Human vs. AI** classification is reasonably strong (F1 ~0.52 for AI, ~0.67 for Human).
 - **The `Mixed` class** is the primary source of error, with an F1-score of only **~0.05**.
 
@@ -156,7 +159,7 @@ The confusion matrix reveals *where* the model gets confused:
 
 The `Mixed` class represents text that blends human and AI authorship. This creates a fundamental ambiguity for bag-of-words models:
 
-> **Insight:** Mixed text *interpolates* between AI and Human stylistic patterns. It lacks unique "anchor" words that exclusively signal the Mixed class, causing the model to frequently misclassify Mixed samples as either AI or Human.
+> **Insight:** Mixed text _interpolates_ between AI and Human stylistic patterns. It lacks unique "anchor" words that exclusively signal the Mixed class, causing the model to frequently misclassify Mixed samples as either AI or Human.
 
 This is a well-known limitation of frequency-based methods. Addressing this challenge motivates the transition to **contextual embeddings** (e.g., Transformers) in future work.
 
@@ -172,6 +175,7 @@ One of the key advantages of Random Forest is its ability to rank features by th
 <p align="center"><em>Figure 3: Top 20 features driving classification, ranked by Random Forest importance.</em></p>
 
 **Notable findings:**
+
 - **`vocab_diversity`** ranks as the **#1 most important feature**, confirming the hypothesis that lexical diversity is a strong stylistic discriminator between human and AI text.
 - **`avg_sent_len`** also ranks highly (top 10), reinforcing that sentence-level structure carries discriminative signal.
 - Domain-specific bigrams and technical terms (e.g., function words, scientific phrases) appear among the top features, reflecting the scientific nature of the dataset.
@@ -182,13 +186,13 @@ One of the key advantages of Random Forest is its ability to rank features by th
 
 Beyond aggregate metrics, we examine individual misclassifications to generate **diagnostic hypotheses**:
 
-| True Label | Predicted | Diagnostic Hypothesis |
-|:----------:|:---------:|------------------------|
-| AI         | Human     | This AI text may exhibit higher lexical diversity or stylistic variation than typical LLM outputs, causing it to resemble human writing. |
-| Human      | AI        | This human text may use overly technical, rigid academic structures that are characteristic of AI-generated prose. |
-| Mixed      | AI/Human  | Mixed text blends features from both classes, creating overlap in the feature space that bag-of-words models cannot resolve. |
+| True Label | Predicted | Diagnostic Hypothesis                                                                                                                    |
+| :--------: | :-------: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+|     AI     |   Human   | This AI text may exhibit higher lexical diversity or stylistic variation than typical LLM outputs, causing it to resemble human writing. |
+|   Human    |    AI     | This human text may use overly technical, rigid academic structures that are characteristic of AI-generated prose.                       |
+|   Mixed    | AI/Human  | Mixed text blends features from both classes, creating overlap in the feature space that bag-of-words models cannot resolve.             |
 
-> **Takeaway:** The boundary between AI and Human text in scientific writing is not a clean line — it is a *gradient*. Models that rely solely on surface-level word statistics will struggle with texts near this boundary.
+> **Takeaway:** The boundary between AI and Human text in scientific writing is not a clean line — it is a _gradient_. Models that rely solely on surface-level word statistics will struggle with texts near this boundary.
 
 ---
 
@@ -203,8 +207,8 @@ Beyond aggregate metrics, we examine individual misclassifications to generate *
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/AIGTxt.git
-cd AIGTxt
+git clone https://github.com/AdityaDotEnv/AIGTxt-Experiments.git
+cd AIGTxt-Experiments
 
 # 2. Create and activate a virtual environment
 python -m venv .venv
@@ -248,30 +252,35 @@ The notebook is **pre-executed** — all outputs, plots, and classification repo
 <summary><strong>TF-IDF (Term Frequency–Inverse Document Frequency)</strong></summary>
 
 A statistical measure that evaluates how important a word is to a document in a collection. Words that appear frequently in one document but rarely across the corpus receive high TF-IDF scores, making them strong discriminative features.
+
 </details>
 
 <details>
 <summary><strong>N-Grams</strong></summary>
 
-Contiguous sequences of *n* items from a text. Unigrams (n=1) are individual words; bigrams (n=2) capture two-word phrases like "machine learning" or "neural network", preserving local word order information that unigrams alone lose.
+Contiguous sequences of _n_ items from a text. Unigrams (n=1) are individual words; bigrams (n=2) capture two-word phrases like "machine learning" or "neural network", preserving local word order information that unigrams alone lose.
+
 </details>
 
 <details>
 <summary><strong>Stratified K-Fold Cross-Validation</strong></summary>
 
 A model evaluation technique that splits the training data into K folds, ensuring each fold preserves the original class distribution. The model is trained on K-1 folds and tested on the remaining fold, rotating through all folds to produce a robust performance estimate.
+
 </details>
 
 <details>
 <summary><strong>Random Forest</strong></summary>
 
 An ensemble learning method that constructs multiple decision trees during training and outputs the mode of their predictions. Each tree is trained on a random subset of the data (bagging) and considers a random subset of features at each split, reducing variance and overfitting.
+
 </details>
 
 <details>
 <summary><strong>Multinomial Naive Bayes</strong></summary>
 
 A probabilistic classifier based on Bayes' theorem with the assumption that features are conditionally independent given the class label. Despite this "naive" assumption, it performs surprisingly well on text classification tasks, especially with TF-IDF features.
+
 </details>
 
 ---
