@@ -250,7 +250,7 @@ Beyond TF-IDF, we engineer two document-level features that capture **writing st
 
 **Average Sentence Length (`avg_sent_len`):**
 
-$$\text{avg\_sent\_len}(d) = \frac{1}{|S_d|} \sum_{s \in S_d} |s|$$
+$$\text{avg-sent-len}(d) = \frac{1}{|S_d|} \sum_{s \in S_d} |s|$$
 
 Where $S_d$ is the set of sentences in document $d$ (obtained via NLTK's `sent_tokenize`), and $|s|$ is the number of words in sentence $s$ (via `word_tokenize`).
 
@@ -258,7 +258,7 @@ Where $S_d$ is the set of sentences in document $d$ (obtained via NLTK's `sent_t
 
 **Vocabulary Diversity (`vocab_diversity`):**
 
-$$\text{vocab\_diversity}(d) = \frac{|\text{unique\_words}(d)|}{|\text{total\_words}(d)|}$$
+$$\text{vocab-diversity}(d) = \frac{|\text{unique-words}(d)|}{|\text{total-words}(d)|}$$
 
 This is the **Type-Token Ratio (TTR)**, measuring the proportion of unique words to total words in a document.
 
@@ -466,9 +466,9 @@ Unlike AI text (which has signature phrases) and Human text (which has stylistic
 
 **Factor 3 — Feature Averaging:**
 
-Our document-level features (avg_sent_len, vocab_diversity) compute averages over the entire passage. For a Mixed document, these averages fall between the typical AI and Human values, further blurring the distinction:
+Our document-level features (`avg_sent_len`, `vocab_diversity`) compute averages over the entire passage. For a Mixed document, these averages fall between the typical AI and Human values, further blurring the distinction:
 
-$$\text{vocab\_diversity}_{\text{Mixed}} \approx \frac{\text{vocab\_diversity}_{\text{Human}} + \text{vocab\_diversity}_{\text{AI}}}{2}$$
+$$\text{vocab-diversity}_{\text{Mixed}} \approx \frac{\text{vocab-diversity}_{\text{Human}} + \text{vocab-diversity}_{\text{AI}}}{2}$$
 
 This averaging effect suppresses the very signal that distinguishes the three classes.
 
